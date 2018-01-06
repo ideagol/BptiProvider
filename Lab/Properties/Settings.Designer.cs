@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Momentum.Boplats.Ekonomi.Kassa.Properties {
+namespace Lab.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -26,60 +26,36 @@ namespace Momentum.Boplats.Ekonomi.Kassa.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string TerminalTcp {
+        public string ClientApiUrl {
             get {
-                return ((string)(this["TerminalTcp"]));
+                return ((string)(this["ClientApiUrl"]));
             }
             set {
-                this["TerminalTcp"] = value;
+                this["ClientApiUrl"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string TerminalRs232 {
+        [global::System.Configuration.DefaultSettingValueAttribute("Kvittoskrivare")]
+        public string Printername {
             get {
-                return ((string)(this["TerminalRs232"]));
+                return ((string)(this["Printername"]));
             }
             set {
-                this["TerminalRs232"] = value;
+                this["Printername"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string BoplatsApiUrl {
+        [global::System.Configuration.DefaultSettingValueAttribute("127.0.0.1")]
+        public string TerminalIpadress {
             get {
-                return ((string)(this["BoplatsApiUrl"]));
+                return ((string)(this["TerminalIpadress"]));
             }
             set {
-                this["BoplatsApiUrl"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("2000")]
-        public int TerminalPort {
-            get {
-                return ((int)(this["TerminalPort"]));
-            }
-            set {
-                this["TerminalPort"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool UsePrinterWindow {
-            get {
-                return ((bool)(this["UsePrinterWindow"]));
-            }
-            set {
-                this["UsePrinterWindow"] = value;
+                this["TerminalIpadress"] = value;
             }
         }
     }

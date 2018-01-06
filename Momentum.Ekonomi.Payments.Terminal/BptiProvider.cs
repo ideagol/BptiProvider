@@ -477,7 +477,10 @@ namespace Momentum.Ekonomi.Payments.Terminal.Bpti
 
         public void Cancel()
         {
-            API.cancel();
+            if (PendingTransactionType != 0)
+            {
+                API.end();
+            }
         }
 
         public void EndTransaction()

@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{58343279-19D2-4AD4-920B-FCF5A393D061}</ProjectGuid>
+    <ProjectGuid>{00609C92-853E-44E8-9B81-12279CA12BC6}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Momentum.Boplats.Ekonomi.Kassa</RootNamespace>
-    <AssemblyName>Momentum.Boplats.Ekonomi.Kassa</AssemblyName>
+    <RootNamespace>Lab</RootNamespace>
+    <AssemblyName>Lab</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -31,9 +31,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject>Momentum.Boplats.Ekonomi.Kassa.Program</StartupObject>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -48,34 +45,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EditSettings.cs">
+    <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="EditSettings.Designer.cs">
-      <DependentUpon>EditSettings.cs</DependentUpon>
-    </Compile>
-    <Compile Include="KassaMain.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="KassaMain.Designer.cs">
-      <DependentUpon>KassaMain.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PrinterWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PrinterWindow.Designer.cs">
-      <DependentUpon>PrinterWindow.cs</DependentUpon>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="EditSettings.resx">
-      <DependentUpon>EditSettings.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="KassaMain.resx">
-      <DependentUpon>KassaMain.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PrinterWindow.resx">
-      <DependentUpon>PrinterWindow.cs</DependentUpon>
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -86,7 +65,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="App1.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -99,26 +77,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Connected Services\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Momentum.Ekonomi.Payments.Terminal\Momentum.Ekonomi.Payments.Terminal.csproj">
-      <Project>{9172a7f9-22ba-4daf-b171-c18f9f6b6828}</Project>
-      <Name>Momentum.Ekonomi.Payments.Terminal</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <COMReference Include="BPTI">
-      <Guid>{0D17F878-8008-4FF6-AD9C-FBE1C1BB5299}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
