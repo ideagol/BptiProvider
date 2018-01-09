@@ -29,16 +29,17 @@ namespace Momentum.Boplats.Ekonomi.Kassa
         {
             base.OnLoad(e);
 
-            Terminal.TerminalCommonEvent += Terminal_TerminalCommonEvent;
+            Terminal.TerminalInformationEvent += Terminal_TerminalCommonEvent;
             Terminal.TerminalDisplayEvent += Terminal_TerminalDisplayEvent;
-            //Terminal.TerminalReceiptEvent += Terminal_TerminalReceiptEvent;
+            Terminal.TerminalExceptionEvent += Terminal_TerminalExceptionEvent;
 
             ConnectToTerminal();
 
             if (Properties.Settings.Default.UsePrinterWindow)
             { 
-                PrinterWindow printerWindow = new PrinterWindow();
+                PrinterWindow printerWindow = new PrinterWindow();                
                 printerWindow.Terminal = Terminal;
+                
                 printerWindow.Show();
             }
 
@@ -46,42 +47,26 @@ namespace Momentum.Boplats.Ekonomi.Kassa
 
         }
 
-        private void ConnectToTerminal()
+        private void Terminal_TerminalExceptionEvent(object sender, EventArgs e)
         {
-            if (!Terminal.ConnectionInitiated)
-            {
-                if (Properties.Settings.Default.TerminalTcp.Length > 0 && Properties.Settings.Default.TerminalPort > 0)
-                {
-                    Terminal.AnslutTCP(Properties.Settings.Default.TerminalTcp, Properties.Settings.Default.TerminalPort);
-                }
-                else
-                {
+            var arg = e as DisplayEventArgs;
+            StringBuilder message = new StringBuilder();
 
+            if (arg != null && arg.Items.Count > 0)
+            {
+                foreach (var item in arg.Items)
+                {
+                    message.AppendLine(item);
                 }
             }
-            else
-            {
-                Terminal.ÅterAnslut();
-            }
+
+            MessageBox.Show(message.ToString());
         }
 
-        //private void Terminal_TerminalReceiptEvent(object sender, EventArgs e)
-        //{
-
-        //    var arg = e as DisplayEventArgs;
-
-        //    if (arg != null && arg.Items.Count > 0)
-        //    {
-        //        foreach (var item in arg.Items)
-        //        {
-        //            if (item != null )
-        //            {
-        //                receipt.Items.Add(item);
-        //            }
-        //        }
-        //    }
-
-        //}
+        private void ConnectToTerminal()
+        {            
+            Terminal.Anslut(Properties.Settings.Default.TerminalTcp, Properties.Settings.Default.TerminalPort, null);            
+        }    
 
         private void Terminal_TerminalDisplayEvent(object sender, EventArgs e)
         {
@@ -124,12 +109,12 @@ namespace Momentum.Boplats.Ekonomi.Kassa
                 amount.Text = "0";
             if (VAT.Text.Length == 0)
                 VAT.Text = "0";
-            if (cashBack.Text.Length == 0)
-                cashBack.Text = "0";
+            //if (cashBack.Text.Length == 0)
+            //    cashBack.Text = "0";
            
             var amountsToSend = GetAmountsToSend();
-            Terminal.StartaKöp();
-            Terminal.SkickaBelopp(amountsToSend.net, amountsToSend.vat, amountsToSend.chash);
+            
+            Terminal.Betala(amountsToSend.net, amountsToSend.vat, amountsToSend.chash);
 
         }
 
@@ -139,9 +124,9 @@ namespace Momentum.Boplats.Ekonomi.Kassa
 
             if (amount.Text.Length > 0 && Int32.Parse(amount.Text) > 99)
             {
-                amountsToSend.vat = Int32.Parse(VAT.Text);
-                amountsToSend.net = Int32.Parse(amount.Text);
-                amountsToSend.chash = Int32.Parse(cashBack.Text);               
+                amountsToSend.vat = Int32.Parse(VAT.Text) * 100;
+                amountsToSend.net = Int32.Parse(amount.Text) * 100;
+                amountsToSend.chash = 0;
             }
 
             return amountsToSend;
@@ -149,7 +134,7 @@ namespace Momentum.Boplats.Ekonomi.Kassa
 
         private void cancelButton_Click(object sender, EventArgs e)
         {
-            Terminal.Cancel();
+            Terminal.Avbryt();
         }
 
         private void KassaMain_Load(object sender, EventArgs e)
@@ -172,6 +157,46 @@ namespace Momentum.Boplats.Ekonomi.Kassa
             EditSettings editSettings = new EditSettings();
             editSettings.StartPosition = FormStartPosition.CenterParent;
             editSettings.ShowDialog();
+        }
+
+        private void eventsList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            if (eventsList.SelectedItem != null)
+            {
+                MessageBox.Show(eventsList.SelectedItem.ToString());
+            }
+            
+        }
+
+        private void manualCardButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void closeButton_Click(object sender, EventArgs e)
+        {
+            Terminal.Close();
+        }
+
+        private void newCustomer_Click(object sender, EventArgs e)
+        {
+            Terminal.Open();
+        }
+
+        private void apartment_CheckedChanged(object sender, EventArgs e)
+        {
+            if (apartment.Checked)
+            {
+                amount.Text = "300";
+                VAT.Text = "40";
+            }
+            else
+            {
+                amount.Text = "200";
+                VAT.Text = "40";
+            }
+
         }
     }
 

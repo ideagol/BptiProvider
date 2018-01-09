@@ -1,24 +1,22 @@
 ﻿using BPTI;
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 
 namespace Momentum.Ekonomi.Payments.Terminal.Bpti
 {
-    public class BptiProvider : ICoBpTiX2Events
+    public class BptiProvider : ICoBpTiX2Events, ITermimal
     {
-
-        public event EventHandler TerminalDisplayEvent;
-        public event EventHandler TerminalReceiptEvent;
-        public event EventHandler TerminalCommonEvent;
-
-
-
-
         public BptiProvider()
         {
             API = new CoBptiX3Class();
+            CustomMerchantReceiptRows = new List<string>();
+            CustomCustomerReceiptRows = new List<string>();
         }
+        
+        
+        
         
         #region Variables
         public bool TransactionStarted { get; private set; }
@@ -28,8 +26,12 @@ namespace Momentum.Ekonomi.Payments.Terminal.Bpti
         public int CurrentTransactionType { get; private set; }
         public bool Opened { get; private set; }
         public CoBptiX3Class API { get; set; }
-        public IConnectionPointContainer ConnectionPointContainer { get; private set; }
-        
+
+        public List<string> CustomMerchantReceiptRows { get; set; }
+        public List<string> CustomCustomerReceiptRows { get; set; }
+        public string TransactionNumber { get; set; }
+        public bool TransactionAccepted { get; private set; }
+
         #endregion
 
         #region BpTiConstants
@@ -90,11 +92,13 @@ namespace Momentum.Ekonomi.Payments.Terminal.Bpti
             riEnd = -1,
         };
         enum ResultDataValues { rdEnd = -1 };
+
+       
         #endregion
         
         #region BPTIEvents
 
-        
+
 
         public void terminalDspEvent(ref string row1, ref string row2, ref string row3, ref string row4)
         {
@@ -115,7 +119,7 @@ namespace Momentum.Ekonomi.Payments.Terminal.Bpti
 
         public void infoEvent(ref string text)
         {
-            EventHandler displayEventhandler = TerminalCommonEvent;
+            EventHandler displayEventhandler = TerminalInformationEvent;
 
             DisplayEventArgs arg = new DisplayEventArgs();
             arg.Items.Add(text);
@@ -127,13 +131,13 @@ namespace Momentum.Ekonomi.Payments.Terminal.Bpti
 
         public void exceptionEvent(ref string text, int code)
         {
-            EventHandler displayEventhandler = TerminalCommonEvent;
+            EventHandler exceptionEventhandler = TerminalExceptionEvent;
 
             DisplayEventArgs arg = new DisplayEventArgs();
             arg.Items.Add(text);
-            if (displayEventhandler != null)
+            if (exceptionEventhandler != null)
             {
-                displayEventhandler(this, arg);
+                exceptionEventhandler(this, arg);
             }
         }
 
@@ -141,12 +145,23 @@ namespace Momentum.Ekonomi.Payments.Terminal.Bpti
         {
 
             if (txnType == (int)TransactionTypes.LPP_PURCHASE || txnType == (int)TransactionTypes.LPP_REFUND || txnType == (int)TransactionTypes.LPP_REVERSAL)
+            {
+                if (resultCode != 0)
+                {
+                    TransactionAccepted = false;
+                }
+                else
+                {
+                    TransactionAccepted = true;
+                }
                 API.merchantReceipt();
-            else if  (txnType == (int)TransactionTypes.LPP_CLOSEBATCH)
+            }
+            else if (txnType == (int)TransactionTypes.LPP_CLOSEBATCH)
+            {
                 API.batchReport();
-
-            EventHandler displayEventhandler = TerminalCommonEvent;
-
+            }
+                
+            EventHandler displayEventhandler = TerminalInformationEvent;
             DisplayEventArgs arg = new DisplayEventArgs();
             arg.Items.Add(text);
             if (displayEventhandler != null)
@@ -155,9 +170,22 @@ namespace Momentum.Ekonomi.Payments.Terminal.Bpti
             }
         }
 
+        public void Open()
+        {
+            if (Opened)
+            {
+                API.close();
+            }
+        }
+            
+        public void Close()
+        {            
+            API.close();
+        }
+
         public void referralEvent(ref string text)
         {
-            EventHandler displayEventhandler = TerminalCommonEvent;
+            EventHandler displayEventhandler = TerminalInformationEvent;
 
             DisplayEventArgs arg = new DisplayEventArgs();
             arg.Items.Add(text);
@@ -169,7 +197,7 @@ namespace Momentum.Ekonomi.Payments.Terminal.Bpti
 
         public void lppCmdFailedEvent(int cmd, int code, ref string text)
         {
-            EventHandler displayEventhandler = TerminalCommonEvent;
+            EventHandler displayEventhandler = TerminalInformationEvent;
 
             DisplayEventArgs arg = new DisplayEventArgs();
             arg.Items.Add(text);
@@ -181,7 +209,7 @@ namespace Momentum.Ekonomi.Payments.Terminal.Bpti
 
         public void cardDataEvent(ref string text, ref string cardNo, ref string expDate, ref string track2)
         {
-            EventHandler displayEventhandler = TerminalCommonEvent;
+            EventHandler displayEventhandler = TerminalInformationEvent;
 
             DisplayEventArgs arg = new DisplayEventArgs();
             arg.Items.Add(text);
@@ -194,10 +222,14 @@ namespace Momentum.Ekonomi.Payments.Terminal.Bpti
         public void resultDataEvent(int resultType, int item, ref string description, ref string Value)
         {
 
-
+            if (item == 20 && TransactionNumber != null)
+            {
+                TransactionNumber = Value;
+            }
+            
             switch ((ResultDataTypes)resultType)
             {
-                case ResultDataTypes.rdCUSTOMERRECEIPT:
+                case ResultDataTypes.rdCUSTOMERRECEIPT:                   
                 case ResultDataTypes.rdMERCHANTRECEIPT:
                     receiptData(resultType, item, description, Value);
                     break;
@@ -219,7 +251,7 @@ namespace Momentum.Ekonomi.Payments.Terminal.Bpti
         {
             string receiptLine;
             StringBuilder receipt = new StringBuilder();
-    
+            
             bool written;
             written = false;
 
@@ -373,7 +405,7 @@ namespace Momentum.Ekonomi.Payments.Terminal.Bpti
             }
 
 
-            EventHandler displayEventhandler = TerminalCommonEvent;
+            EventHandler displayEventhandler = TerminalInformationEvent;
 
             DisplayEventArgs arg = new DisplayEventArgs();
             arg.Items.Add(status);
@@ -385,7 +417,7 @@ namespace Momentum.Ekonomi.Payments.Terminal.Bpti
 
         public void paymentCodeEvent(ref string text)
         {
-            EventHandler displayEventhandler = TerminalCommonEvent;
+            EventHandler displayEventhandler = TerminalInformationEvent;
 
             DisplayEventArgs arg = new DisplayEventArgs();
             arg.Items.Add(text);
@@ -395,28 +427,36 @@ namespace Momentum.Ekonomi.Payments.Terminal.Bpti
             }
         }
         #endregion
-        
-        #region Methods
 
-        void Initialize(object window)
-        {
-            IConnectionPointContainer icpc;
-            API = new CoBptiX3Class();
-            icpc = (IConnectionPointContainer)API;
-            IConnectionPoint icp;
-            Guid IID_ICoBpTiEvents = typeof(ICoBpTiX2Events).GUID;
+        #region Interface
 
-            icpc.FindConnectionPoint(ref IID_ICoBpTiEvents, out icp);
-            int cookie = 0;
-            icp.Advise(window, out cookie);
-            ConnectionCookie = cookie;
-        }
+        public event EventHandler TerminalDisplayEvent;
+        public event EventHandler TerminalReceiptEvent;
+        public event EventHandler TerminalInformationEvent;
+        public event EventHandler TerminalExceptionEvent;
+        public event EventHandler TerminalTransactionOkEvent;
 
-        public void AnslutTCP(string terminalAdr, int terminalPort)
+        public void Anslut(string terminalAdr, int? terminalPort, int? comPort)
         {
             try
             {
-                API.initLan(terminalAdr, terminalPort);
+                if (!ConnectionInitiated)
+                {
+
+                    if (terminalAdr != null && terminalPort.HasValue)
+                    {
+                        API.initLan(terminalAdr, terminalPort.Value);
+                    }
+                    else if (comPort.HasValue)
+                    {
+                        API.initRs232(comPort.Value, "");
+                    }
+                }
+                else
+                {
+                    API.connect();
+                }
+
                 ConnectionInitiated = true;
             }
             catch (Exception)
@@ -426,56 +466,26 @@ namespace Momentum.Ekonomi.Payments.Terminal.Bpti
             }
         }
 
-
-        public void AnslutTCP( int comPort)
-        {
-            try
-            {        
-                API.initRs232(comPort, "");
-                ConnectionInitiated = true;
-            }
-            catch (Exception)
-            {
-
-                ConnectionInitiated = false;
-            }
-        }
-        
-
-        public void ÅterAnslut()
-        {
-            API.connect();
-        }
-        
-        public void StartaKöp()
+        public void Betala(int belopp, int moms, int tillbaka)
         {
             API.start((int)TransactionTypes.LPP_PURCHASE);
             PendingTransactionType = (int)TransactionTypes.LPP_PURCHASE;
+            API.sendAmounts(belopp, moms, tillbaka);
         }
 
-        public void StartaÅterköp()
+        public void Återbetala(int belopp, int moms, int tillbaka)
         {
-
             API.start((int)TransactionTypes.LPP_REFUND);
-            PendingTransactionType = (int)TransactionTypes.LPP_REFUND;
-        }
-        
-        public void SkickaBelopp(int amount, int VAT, int cashBack)
-        {
-            API.sendAmounts(amount, VAT, cashBack);         
+            PendingTransactionType = (int)TransactionTypes.LPP_PURCHASE;
+            API.sendAmounts(belopp, moms, tillbaka);
         }
 
-        public void Open()
+        public void Avbryt()
         {
-            API.open();
+            API.cancel();
         }
 
-        public void Close()
-        {
-            API.close();
-        }
-
-        public void Cancel()
+        public void StängTerminal()
         {
             if (PendingTransactionType != 0)
             {
@@ -483,23 +493,12 @@ namespace Momentum.Ekonomi.Payments.Terminal.Bpti
             }
         }
 
-        public void EndTransaction()
+        public void Avsluta()
         {
-            API.endTransaction();
+            if (TransactionStarted)
+                API.endTransaction();
         }
 
         #endregion
-
-        #region API
-        private void startTransaction(TransactionTypes type)
-        {
-            if (!TransactionStarted)
-            {
-                PendingTransactionType = (int)type;
-                API.start((int)type);
-            }
-        }
-        #endregion
-
     }
 }

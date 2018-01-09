@@ -59,6 +59,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BptiProvider.cs" />
+    <Compile Include="TransactionEventArgs.cs" />
+    <Compile Include="ITermimal.cs" />
     <Compile Include="StatusEventArgs.cs" />
     <Compile Include="DisplayEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
