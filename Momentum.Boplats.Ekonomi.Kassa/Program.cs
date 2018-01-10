@@ -18,23 +18,11 @@ namespace Momentum.Boplats.Ekonomi.Kassa
         static void Main()
         {
 
-            int cookie;
             Application.SetCompatibleTextRenderingDefault(false);
-            var form = new KassaMain();
-            form.Terminal = new BptiProvider();
-
-            IConnectionPointContainer icpc;
-            icpc = (IConnectionPointContainer)form.Terminal.API;
-            IConnectionPoint icp;
-            Guid IID_ICoBpTiEvents = typeof(ICoBpTiX2Events).GUID;
-
-            icpc.FindConnectionPoint(ref IID_ICoBpTiEvents, out icp);
-            icp.Advise(form.Terminal, out cookie);
-
-         
+            var form = new KassaMain();           
             Application.EnableVisualStyles();
             Application.Run(form);
-            icp.Unadvise(cookie);            
+                     
         }
     }
 }

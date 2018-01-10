@@ -11,8 +11,9 @@ namespace Momentum.Ekonomi.Payments.Terminal
         event EventHandler TerminalReceiptEvent;
         event EventHandler TerminalInformationEvent;
         event EventHandler TerminalExceptionEvent;
-        event EventHandler TerminalTransactionOkEvent;
-        
+        event EventHandler TerminalTransactionEndedEvent;
+        event EventHandler TerminalSignatureNeededEvent;
+
 
         void Anslut(string terminalAdr, int? terminalPort, int? comPort);
         void Betala(int belopp, int moms, int tillbaka);        

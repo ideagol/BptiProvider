@@ -61,6 +61,23 @@
             this.socialSecurityNumber = new System.Windows.Forms.Label();
             this.applicantList = new System.Windows.Forms.ListBox();
             this.summitTab = new System.Windows.Forms.TabPage();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.testComButton = new System.Windows.Forms.Button();
+            this.notSentButton = new System.Windows.Forms.Button();
+            this.TO = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.FROM = new System.Windows.Forms.TextBox();
+            this.totalDateButton = new System.Windows.Forms.Button();
+            this.detailedDateButton = new System.Windows.Forms.Button();
+            this.byNumber = new System.Windows.Forms.TextBox();
+            this.openBatchButton = new System.Windows.Forms.Button();
+            this.totalButton = new System.Windows.Forms.Button();
+            this.detailedButton = new System.Windows.Forms.Button();
+            this.trmConfigButton = new System.Windows.Forms.Button();
+            this.closeBatchButton = new System.Windows.Forms.Button();
             this.panel6 = new System.Windows.Forms.Panel();
             this.eventsList = new System.Windows.Forms.ListBox();
             this.trmDsp = new System.Windows.Forms.TextBox();
@@ -72,33 +89,17 @@
             this.kopplaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.closeBatchButton = new System.Windows.Forms.Button();
-            this.trmConfigButton = new System.Windows.Forms.Button();
-            this.detailedButton = new System.Windows.Forms.Button();
-            this.totalButton = new System.Windows.Forms.Button();
-            this.openBatchButton = new System.Windows.Forms.Button();
-            this.byNumber = new System.Windows.Forms.TextBox();
-            this.detailedDateButton = new System.Windows.Forms.Button();
-            this.totalDateButton = new System.Windows.Forms.Button();
-            this.FROM = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.TO = new System.Windows.Forms.Label();
-            this.notSentButton = new System.Windows.Forms.Button();
-            this.testComButton = new System.Windows.Forms.Button();
-            this.panel4 = new System.Windows.Forms.Panel();
+            this.ReConnect = new System.Windows.Forms.ToolStripMenuItem();
             this.panel3.SuspendLayout();
             this.functionContainer.SuspendLayout();
             this.paymentsTab.SuspendLayout();
             this.panel2.SuspendLayout();
             this.applicantPanel.SuspendLayout();
             this.summitTab.SuspendLayout();
+            this.panel4.SuspendLayout();
             this.panel6.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
-            this.panel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel3
@@ -130,7 +131,7 @@
             this.closeButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.closeButton.Location = new System.Drawing.Point(184, 36);
             this.closeButton.Name = "closeButton";
-            this.closeButton.Size = new System.Drawing.Size(75, 22);
+            this.closeButton.Size = new System.Drawing.Size(75, 23);
             this.closeButton.TabIndex = 4;
             this.closeButton.Text = "Stäng";
             this.closeButton.Click += new System.EventHandler(this.closeButton_Click);
@@ -221,7 +222,7 @@
             this.newCustomer.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.newCustomer.Location = new System.Drawing.Point(211, 219);
             this.newCustomer.Name = "newCustomer";
-            this.newCustomer.Size = new System.Drawing.Size(268, 32);
+            this.newCustomer.Size = new System.Drawing.Size(268, 23);
             this.newCustomer.TabIndex = 32;
             this.newCustomer.Text = "Ny kund";
             this.newCustomer.UseVisualStyleBackColor = true;
@@ -442,6 +443,172 @@
             this.summitTab.Text = "Dagsavslut";
             this.summitTab.UseVisualStyleBackColor = true;
             // 
+            // panel4
+            // 
+            this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel4.Controls.Add(this.testComButton);
+            this.panel4.Controls.Add(this.notSentButton);
+            this.panel4.Controls.Add(this.TO);
+            this.panel4.Controls.Add(this.label9);
+            this.panel4.Controls.Add(this.label8);
+            this.panel4.Controls.Add(this.label7);
+            this.panel4.Controls.Add(this.textBox2);
+            this.panel4.Controls.Add(this.FROM);
+            this.panel4.Controls.Add(this.totalDateButton);
+            this.panel4.Controls.Add(this.detailedDateButton);
+            this.panel4.Controls.Add(this.byNumber);
+            this.panel4.Controls.Add(this.openBatchButton);
+            this.panel4.Controls.Add(this.totalButton);
+            this.panel4.Controls.Add(this.detailedButton);
+            this.panel4.Controls.Add(this.trmConfigButton);
+            this.panel4.Controls.Add(this.closeBatchButton);
+            this.panel4.Location = new System.Drawing.Point(6, 7);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(266, 231);
+            this.panel4.TabIndex = 24;
+            // 
+            // testComButton
+            // 
+            this.testComButton.Location = new System.Drawing.Point(88, 180);
+            this.testComButton.Name = "testComButton";
+            this.testComButton.Size = new System.Drawing.Size(75, 23);
+            this.testComButton.TabIndex = 30;
+            this.testComButton.Text = "Test komm.";
+            this.testComButton.UseVisualStyleBackColor = true;
+            // 
+            // notSentButton
+            // 
+            this.notSentButton.Location = new System.Drawing.Point(6, 180);
+            this.notSentButton.Name = "notSentButton";
+            this.notSentButton.Size = new System.Drawing.Size(75, 23);
+            this.notSentButton.TabIndex = 29;
+            this.notSentButton.Text = "Ej skickade";
+            this.notSentButton.UseVisualStyleBackColor = true;
+            // 
+            // TO
+            // 
+            this.TO.AutoSize = true;
+            this.TO.Location = new System.Drawing.Point(97, 141);
+            this.TO.Name = "TO";
+            this.TO.Size = new System.Drawing.Size(37, 13);
+            this.TO.TabIndex = 28;
+            this.TO.Text = "T.o.m.";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(97, 106);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(36, 13);
+            this.label9.TabIndex = 27;
+            this.label9.Text = "Fr.o.m";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.BackColor = System.Drawing.Color.Transparent;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.Location = new System.Drawing.Point(145, 125);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(89, 13);
+            this.label8.TabIndex = 26;
+            this.label8.Text = "YYMMDDHHMM";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Location = new System.Drawing.Point(145, 88);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(89, 13);
+            this.label7.TabIndex = 25;
+            this.label7.Text = "YYMMDDHHMM";
+            // 
+            // textBox2
+            // 
+            this.textBox2.Location = new System.Drawing.Point(145, 138);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(100, 20);
+            this.textBox2.TabIndex = 24;
+            // 
+            // FROM
+            // 
+            this.FROM.Location = new System.Drawing.Point(145, 103);
+            this.FROM.Name = "FROM";
+            this.FROM.Size = new System.Drawing.Size(100, 20);
+            this.FROM.TabIndex = 23;
+            // 
+            // totalDateButton
+            // 
+            this.totalDateButton.Location = new System.Drawing.Point(5, 138);
+            this.totalDateButton.Name = "totalDateButton";
+            this.totalDateButton.Size = new System.Drawing.Size(75, 23);
+            this.totalDateButton.TabIndex = 22;
+            this.totalDateButton.Text = "Total";
+            this.totalDateButton.UseVisualStyleBackColor = true;
+            // 
+            // detailedDateButton
+            // 
+            this.detailedDateButton.Location = new System.Drawing.Point(5, 101);
+            this.detailedDateButton.Name = "detailedDateButton";
+            this.detailedDateButton.Size = new System.Drawing.Size(75, 23);
+            this.detailedDateButton.TabIndex = 21;
+            this.detailedDateButton.Text = "Detaljerad";
+            this.detailedDateButton.UseVisualStyleBackColor = true;
+            // 
+            // byNumber
+            // 
+            this.byNumber.Location = new System.Drawing.Point(167, 51);
+            this.byNumber.Name = "byNumber";
+            this.byNumber.Size = new System.Drawing.Size(76, 20);
+            this.byNumber.TabIndex = 18;
+            this.byNumber.Text = "10";
+            // 
+            // openBatchButton
+            // 
+            this.openBatchButton.Location = new System.Drawing.Point(167, 20);
+            this.openBatchButton.Name = "openBatchButton";
+            this.openBatchButton.Size = new System.Drawing.Size(75, 23);
+            this.openBatchButton.TabIndex = 17;
+            this.openBatchButton.Text = "Öppen bunt";
+            this.openBatchButton.UseVisualStyleBackColor = true;
+            // 
+            // totalButton
+            // 
+            this.totalButton.Location = new System.Drawing.Point(86, 49);
+            this.totalButton.Name = "totalButton";
+            this.totalButton.Size = new System.Drawing.Size(75, 23);
+            this.totalButton.TabIndex = 16;
+            this.totalButton.Text = "Total #";
+            this.totalButton.UseVisualStyleBackColor = true;
+            // 
+            // detailedButton
+            // 
+            this.detailedButton.Location = new System.Drawing.Point(5, 48);
+            this.detailedButton.Name = "detailedButton";
+            this.detailedButton.Size = new System.Drawing.Size(75, 23);
+            this.detailedButton.TabIndex = 15;
+            this.detailedButton.Text = "Detaljerad #";
+            this.detailedButton.UseVisualStyleBackColor = true;
+            // 
+            // trmConfigButton
+            // 
+            this.trmConfigButton.Location = new System.Drawing.Point(86, 20);
+            this.trmConfigButton.Name = "trmConfigButton";
+            this.trmConfigButton.Size = new System.Drawing.Size(75, 23);
+            this.trmConfigButton.TabIndex = 14;
+            this.trmConfigButton.Text = "Trm konfig";
+            this.trmConfigButton.UseVisualStyleBackColor = true;
+            // 
+            // closeBatchButton
+            // 
+            this.closeBatchButton.Location = new System.Drawing.Point(5, 19);
+            this.closeBatchButton.Name = "closeBatchButton";
+            this.closeBatchButton.Size = new System.Drawing.Size(75, 23);
+            this.closeBatchButton.TabIndex = 13;
+            this.closeBatchButton.Text = "Dagsavslut";
+            this.closeBatchButton.UseVisualStyleBackColor = true;
+            // 
             // panel6
             // 
             this.panel6.Controls.Add(this.eventsList);
@@ -516,7 +683,8 @@
             // konfigurationToolStripMenuItem
             // 
             this.konfigurationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.kopplaToolStripMenuItem});
+            this.kopplaToolStripMenuItem,
+            this.ReConnect});
             this.konfigurationToolStripMenuItem.Name = "konfigurationToolStripMenuItem";
             this.konfigurationToolStripMenuItem.Size = new System.Drawing.Size(65, 20);
             this.konfigurationToolStripMenuItem.Text = "Terminal";
@@ -524,7 +692,7 @@
             // kopplaToolStripMenuItem
             // 
             this.kopplaToolStripMenuItem.Name = "kopplaToolStripMenuItem";
-            this.kopplaToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.kopplaToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.kopplaToolStripMenuItem.Text = "Koppla upp";
             this.kopplaToolStripMenuItem.Click += new System.EventHandler(this.kopplaToolStripMenuItem_Click);
             // 
@@ -544,171 +712,12 @@
             this.panel1.Size = new System.Drawing.Size(775, 42);
             this.panel1.TabIndex = 35;
             // 
-            // closeBatchButton
+            // ReConnect
             // 
-            this.closeBatchButton.Location = new System.Drawing.Point(5, 19);
-            this.closeBatchButton.Name = "closeBatchButton";
-            this.closeBatchButton.Size = new System.Drawing.Size(75, 23);
-            this.closeBatchButton.TabIndex = 13;
-            this.closeBatchButton.Text = "Dagsavslut";
-            this.closeBatchButton.UseVisualStyleBackColor = true;
-            // 
-            // trmConfigButton
-            // 
-            this.trmConfigButton.Location = new System.Drawing.Point(86, 20);
-            this.trmConfigButton.Name = "trmConfigButton";
-            this.trmConfigButton.Size = new System.Drawing.Size(75, 23);
-            this.trmConfigButton.TabIndex = 14;
-            this.trmConfigButton.Text = "Trm konfig";
-            this.trmConfigButton.UseVisualStyleBackColor = true;
-            // 
-            // detailedButton
-            // 
-            this.detailedButton.Location = new System.Drawing.Point(5, 48);
-            this.detailedButton.Name = "detailedButton";
-            this.detailedButton.Size = new System.Drawing.Size(75, 23);
-            this.detailedButton.TabIndex = 15;
-            this.detailedButton.Text = "Detaljerad #";
-            this.detailedButton.UseVisualStyleBackColor = true;
-            // 
-            // totalButton
-            // 
-            this.totalButton.Location = new System.Drawing.Point(86, 49);
-            this.totalButton.Name = "totalButton";
-            this.totalButton.Size = new System.Drawing.Size(75, 23);
-            this.totalButton.TabIndex = 16;
-            this.totalButton.Text = "Total #";
-            this.totalButton.UseVisualStyleBackColor = true;
-            // 
-            // openBatchButton
-            // 
-            this.openBatchButton.Location = new System.Drawing.Point(167, 20);
-            this.openBatchButton.Name = "openBatchButton";
-            this.openBatchButton.Size = new System.Drawing.Size(75, 23);
-            this.openBatchButton.TabIndex = 17;
-            this.openBatchButton.Text = "Öppen bunt";
-            this.openBatchButton.UseVisualStyleBackColor = true;
-            // 
-            // byNumber
-            // 
-            this.byNumber.Location = new System.Drawing.Point(167, 51);
-            this.byNumber.Name = "byNumber";
-            this.byNumber.Size = new System.Drawing.Size(76, 20);
-            this.byNumber.TabIndex = 18;
-            this.byNumber.Text = "10";
-            // 
-            // detailedDateButton
-            // 
-            this.detailedDateButton.Location = new System.Drawing.Point(5, 101);
-            this.detailedDateButton.Name = "detailedDateButton";
-            this.detailedDateButton.Size = new System.Drawing.Size(75, 23);
-            this.detailedDateButton.TabIndex = 21;
-            this.detailedDateButton.Text = "Detaljerad";
-            this.detailedDateButton.UseVisualStyleBackColor = true;
-            // 
-            // totalDateButton
-            // 
-            this.totalDateButton.Location = new System.Drawing.Point(5, 138);
-            this.totalDateButton.Name = "totalDateButton";
-            this.totalDateButton.Size = new System.Drawing.Size(75, 23);
-            this.totalDateButton.TabIndex = 22;
-            this.totalDateButton.Text = "Total";
-            this.totalDateButton.UseVisualStyleBackColor = true;
-            // 
-            // FROM
-            // 
-            this.FROM.Location = new System.Drawing.Point(145, 103);
-            this.FROM.Name = "FROM";
-            this.FROM.Size = new System.Drawing.Size(100, 20);
-            this.FROM.TabIndex = 23;
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(145, 138);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(100, 20);
-            this.textBox2.TabIndex = 24;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(145, 88);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(89, 13);
-            this.label7.TabIndex = 25;
-            this.label7.Text = "YYMMDDHHMM";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.BackColor = System.Drawing.Color.Transparent;
-            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(145, 125);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(89, 13);
-            this.label8.TabIndex = 26;
-            this.label8.Text = "YYMMDDHHMM";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(97, 106);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(36, 13);
-            this.label9.TabIndex = 27;
-            this.label9.Text = "Fr.o.m";
-            // 
-            // TO
-            // 
-            this.TO.AutoSize = true;
-            this.TO.Location = new System.Drawing.Point(97, 141);
-            this.TO.Name = "TO";
-            this.TO.Size = new System.Drawing.Size(37, 13);
-            this.TO.TabIndex = 28;
-            this.TO.Text = "T.o.m.";
-            // 
-            // notSentButton
-            // 
-            this.notSentButton.Location = new System.Drawing.Point(6, 180);
-            this.notSentButton.Name = "notSentButton";
-            this.notSentButton.Size = new System.Drawing.Size(75, 23);
-            this.notSentButton.TabIndex = 29;
-            this.notSentButton.Text = "Ej skickade";
-            this.notSentButton.UseVisualStyleBackColor = true;
-            // 
-            // testComButton
-            // 
-            this.testComButton.Location = new System.Drawing.Point(88, 180);
-            this.testComButton.Name = "testComButton";
-            this.testComButton.Size = new System.Drawing.Size(75, 23);
-            this.testComButton.TabIndex = 30;
-            this.testComButton.Text = "Test komm.";
-            this.testComButton.UseVisualStyleBackColor = true;
-            // 
-            // panel4
-            // 
-            this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel4.Controls.Add(this.testComButton);
-            this.panel4.Controls.Add(this.notSentButton);
-            this.panel4.Controls.Add(this.TO);
-            this.panel4.Controls.Add(this.label9);
-            this.panel4.Controls.Add(this.label8);
-            this.panel4.Controls.Add(this.label7);
-            this.panel4.Controls.Add(this.textBox2);
-            this.panel4.Controls.Add(this.FROM);
-            this.panel4.Controls.Add(this.totalDateButton);
-            this.panel4.Controls.Add(this.detailedDateButton);
-            this.panel4.Controls.Add(this.byNumber);
-            this.panel4.Controls.Add(this.openBatchButton);
-            this.panel4.Controls.Add(this.totalButton);
-            this.panel4.Controls.Add(this.detailedButton);
-            this.panel4.Controls.Add(this.trmConfigButton);
-            this.panel4.Controls.Add(this.closeBatchButton);
-            this.panel4.Location = new System.Drawing.Point(6, 7);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(266, 231);
-            this.panel4.TabIndex = 24;
+            this.ReConnect.Name = "ReConnect";
+            this.ReConnect.Size = new System.Drawing.Size(152, 22);
+            this.ReConnect.Text = "Koppla om";
+            this.ReConnect.Click += new System.EventHandler(this.ReConnect_Click);
             // 
             // KassaMain
             // 
@@ -732,13 +741,13 @@
             this.applicantPanel.ResumeLayout(false);
             this.applicantPanel.PerformLayout();
             this.summitTab.ResumeLayout(false);
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
             this.panel6.ResumeLayout(false);
             this.panel6.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.panel1.ResumeLayout(false);
-            this.panel4.ResumeLayout(false);
-            this.panel4.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -806,6 +815,7 @@
         private System.Windows.Forms.Button detailedButton;
         private System.Windows.Forms.Button trmConfigButton;
         private System.Windows.Forms.Button closeBatchButton;
+        private System.Windows.Forms.ToolStripMenuItem ReConnect;
     }
 }
 

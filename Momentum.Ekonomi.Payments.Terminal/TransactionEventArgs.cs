@@ -13,7 +13,7 @@ namespace Momentum.Ekonomi.Payments.Terminal
             
         }
 
-        public string TransactionNumber { get; set; }
-        public bool TransactionOk { get; set; }
+        public string TransactionNumber { get; set; }        
+        public bool TransactionAccepted { get; internal set; }
     }
 }

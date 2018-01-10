@@ -8,24 +8,48 @@ namespace Momentum.Ekonomi.Payments.Terminal.Bpti
 {
     public class BptiProvider : ICoBpTiX2Events, ITermimal
     {
+        IConnectionPointContainer icpc;
+        IConnectionPoint icp;
+
         public BptiProvider()
         {
             API = new CoBptiX3Class();
             CustomMerchantReceiptRows = new List<string>();
             CustomCustomerReceiptRows = new List<string>();
+            Initialize();
         }
-        
-        
-        
-        
+
+        public void Initialize()
+        {           
+            icpc = (IConnectionPointContainer)API;           
+            Guid IID_ICoBpTiEvents = typeof(ICoBpTiX2Events).GUID;
+            icpc.FindConnectionPoint(ref IID_ICoBpTiEvents, out icp);
+            int localCookie;
+            icp.Advise(this, out localCookie);
+            ConnectionCookie = localCookie;
+        }
+
+        public void ReInitialize()
+        {
+            UnInitialize();
+            API = new CoBptiX3Class();
+            Initialize();
+        }
+        public void UnInitialize()
+        {
+            icp.Unadvise(ConnectionCookie);            
+        }
+
         #region Variables
         public bool TransactionStarted { get; private set; }
+        public bool SignatureNeeded { get; private set; }
         public bool ConnectionInitiated { get; private set; }
-        public int ConnectionCookie { get; private set; }
+        public int ConnectionCookie { get;  set; }
         public int PendingTransactionType { get; private set; }
         public int CurrentTransactionType { get; private set; }
         public bool Opened { get; private set; }
         public CoBptiX3Class API { get; set; }
+
 
         public List<string> CustomMerchantReceiptRows { get; set; }
         public List<string> CustomCustomerReceiptRows { get; set; }
@@ -42,7 +66,8 @@ namespace Momentum.Ekonomi.Payments.Terminal.Bpti
             LPP_PURCHASE = 4352,
             LPP_REFUND = 4353,
             LPP_REVERSAL = 4354,
-            LPP_CLOSEBATCH = 4358
+            LPP_CLOSEBATCH = 4358,
+            LPP_SIGNATURE = 4000
         };
         enum ResultDataTypes
         {
@@ -102,19 +127,7 @@ namespace Momentum.Ekonomi.Payments.Terminal.Bpti
 
         public void terminalDspEvent(ref string row1, ref string row2, ref string row3, ref string row4)
         {
-            EventHandler terminalEventhandler = TerminalDisplayEvent;
-         
-            DisplayEventArgs arg = new DisplayEventArgs();
-
-            arg.Items.Add(row1);
-            arg.Items.Add(row2);
-            arg.Items.Add(row3);
-            arg.Items.Add(row4);
-            
-            if (terminalEventhandler != null)
-            {
-                terminalEventhandler(this, arg);
-            }
+            RaiseTerminalDisplayEvent(new string[] { row1, row2, row3, row4 });
         }
 
         public void infoEvent(ref string text)
@@ -131,20 +144,13 @@ namespace Momentum.Ekonomi.Payments.Terminal.Bpti
 
         public void exceptionEvent(ref string text, int code)
         {
-            EventHandler exceptionEventhandler = TerminalExceptionEvent;
-
-            DisplayEventArgs arg = new DisplayEventArgs();
-            arg.Items.Add(text);
-            if (exceptionEventhandler != null)
-            {
-                exceptionEventhandler(this, arg);
-            }
+            RaiseTerminalExceptionEvent(new string[] { text, code.ToString()});
         }
 
         public void txnResultEvent(int txnType, int resultCode, ref string text, ref string clearingCompany)
         {
 
-            if (txnType == (int)TransactionTypes.LPP_PURCHASE || txnType == (int)TransactionTypes.LPP_REFUND || txnType == (int)TransactionTypes.LPP_REVERSAL)
+            if (txnType == (int)TransactionTypes.LPP_PURCHASE || txnType == (int)TransactionTypes.LPP_REFUND || txnType == (int)TransactionTypes.LPP_REVERSAL || txnType == (int)TransactionTypes.LPP_SIGNATURE)
             {
                 if (resultCode != 0)
                 {
@@ -154,75 +160,36 @@ namespace Momentum.Ekonomi.Payments.Terminal.Bpti
                 {
                     TransactionAccepted = true;
                 }
+
                 API.merchantReceipt();
             }
             else if (txnType == (int)TransactionTypes.LPP_CLOSEBATCH)
             {
                 API.batchReport();
             }
-                
-            EventHandler displayEventhandler = TerminalInformationEvent;
-            DisplayEventArgs arg = new DisplayEventArgs();
-            arg.Items.Add(text);
-            if (displayEventhandler != null)
-            {
-                displayEventhandler(this, arg);
-            }
-        }
 
-        public void Open()
-        {
-            if (Opened)
-            {
-                API.close();
-            }
+            RaiseTerminalInformationEvent(new string[] { text });
         }
-            
-        public void Close()
-        {            
-            API.close();
-        }
-
+        
         public void referralEvent(ref string text)
         {
-            EventHandler displayEventhandler = TerminalInformationEvent;
-
-            DisplayEventArgs arg = new DisplayEventArgs();
-            arg.Items.Add(text);
-            if (displayEventhandler != null)
-            {
-                displayEventhandler(this, arg);
-            }
+            RaiseTerminalInformationEvent(new string[] { text });
         }
 
         public void lppCmdFailedEvent(int cmd, int code, ref string text)
         {
-            EventHandler displayEventhandler = TerminalInformationEvent;
-
-            DisplayEventArgs arg = new DisplayEventArgs();
-            arg.Items.Add(text);
-            if (displayEventhandler != null)
-            {
-                displayEventhandler(this, arg);
-            }
+            RaiseTerminalInformationEvent(new string[] { cmd.ToString(),  code.ToString(), text});
         }
 
         public void cardDataEvent(ref string text, ref string cardNo, ref string expDate, ref string track2)
         {
-            EventHandler displayEventhandler = TerminalInformationEvent;
-
-            DisplayEventArgs arg = new DisplayEventArgs();
-            arg.Items.Add(text);
-            if (displayEventhandler != null)
-            {
-                displayEventhandler(this, arg);
-            };
+            RaiseTerminalInformationEvent(new string[] { text, cardNo, expDate, track2 });
         }
 
         public void resultDataEvent(int resultType, int item, ref string description, ref string Value)
         {
 
-            if (item == 20 && TransactionNumber != null)
+            if (item == 20 && TransactionNumber == string.Empty)
             {
                 TransactionNumber = Value;
             }
@@ -319,14 +286,7 @@ namespace Momentum.Ekonomi.Payments.Terminal.Bpti
                     break;
             }
 
-            EventHandler receiptEventhandler = TerminalReceiptEvent;
-
-            DisplayEventArgs arg = new DisplayEventArgs();
-            arg.Items.Add(receipt.ToString());
-            if (receiptEventhandler != null)
-            {
-                receiptEventhandler(this, arg);
-            }
+            RaiseTerminalReceiptEvent(new string[] { receipt.ToString() });
         }
         private void closeBatchData(int item, String text, String data)
         {
@@ -349,92 +309,203 @@ namespace Momentum.Ekonomi.Payments.Terminal.Bpti
         }
         public void statusChangeEvent(int newStatus)
         {
-            string status = null;
-            switch (newStatus)
+
+            try
             {
-                case 0:
-                    status = "Terminalen frånkopplad.";
-                    //closeButton.Text = "Öppna";
-                    //initButton.Text = "Återanslut";
-                    break;
 
-                case 1:
-                    status = "Terminal ansluten och klar att användas.";
-                    //initButton.Text = "Koppla ifrån";
-                    break;
 
-                case 2:
-                    status = "Status öppen.";
-                    Opened = true;
-                    //closeButton.Text = "Stäng";
-                    break;
+                string status = null;
+                switch (newStatus)
+                {
+                    case 0:
+                        status = "Terminalen frånkopplad.";
+                        //closeButton.Text = "Öppna";
+                        //initButton.Text = "Återanslut";
+                        break;
 
-                case 3:
-                    status = "Status stängd.";
-                    Opened = false;
-                    //closeButton.Text = "Öppna";
-                    TransactionStarted = false;
-                    CurrentTransactionType = -1;
-                    break;
+                    case 1:
+                        status = "Terminal ansluten och klar att användas.";
+                        //initButton.Text = "Koppla ifrån";
+                        break;
 
-                case 4:
-                    status = "Transaktion startad.";
-                    TransactionStarted = true;
-                    CurrentTransactionType = PendingTransactionType;
-                    break;
+                    case 2:
+                        status = "Status öppen.";
+                        Opened = true;
+                        //closeButton.Text = "Stäng";
+                        break;
 
-                case 5:
-                    status = "Transaktion avslutad.";
-                    TransactionStarted = false;
-                    CurrentTransactionType = -1;
-                    break;
+                    case 3:
+                        status = "Status stängd.";
+                        Opened = false;
+                        //closeButton.Text = "Öppna";
+                        TransactionStarted = false;
+                        CurrentTransactionType = -1;
+                        break;
 
-                case 6:
-                    status = "statusChangeEvent med värde=" + new string('0', newStatus);
-                    break;
+                    case 4:
+                        status = "Transaktion startad.";
+                        TransactionStarted = true;
+                        CurrentTransactionType = PendingTransactionType;
+                        break;
 
-                case 7:
-                    status = "Kommunikation med terminalen bruten. Anropa connect()?";
-                    TransactionStarted = false;
-                    CurrentTransactionType = -1;
-                    Opened = false;
-                    //closeButton.Text = "Öppna";
-                    //initButton.Text = "Återanslut";
-                    break;
+                    case 5:
+                        status = "Transaktion avslutad.";
+                        TransactionStarted = false;
+                        SignatureNeeded = true;
+                        CurrentTransactionType = -1;
+                        break;
 
+                    case 6:
+                        status = "statusChangeEvent med värde=" + new string('0', newStatus);
+                        break;
+
+                    case 7:
+                        status = "Kommunikation med terminalen bruten. Anropa connect()?";
+                        TransactionStarted = false;
+                        CurrentTransactionType = -1;
+                        Opened = false;
+                        //closeButton.Text = "Öppna";
+                        //initButton.Text = "Återanslut";
+                        break;
+
+                }
+
+
+                RaiseTerminalInformationEvent(new string[] {status});
+
+
+                if (newStatus == 5)
+                {
+                    RaiseTerminalTransactionEndedEvent();
+
+                    if (SignatureNeeded)
+                    {
+                        RaiseTerminalSignatureNeededEvent();
+                    }
+                }
+
+            
             }
-
-
-            EventHandler displayEventhandler = TerminalInformationEvent;
-
-            DisplayEventArgs arg = new DisplayEventArgs();
-            arg.Items.Add(status);
-            if (displayEventhandler != null)
+            catch (Exception)
             {
-                displayEventhandler(this, arg);
+
+                throw;
+            }
+            finally
+            {
+                SignatureNeeded = false;
             }
         }
 
         public void paymentCodeEvent(ref string text)
         {
-            EventHandler displayEventhandler = TerminalInformationEvent;
-
-            DisplayEventArgs arg = new DisplayEventArgs();
-            arg.Items.Add(text);
-            if (displayEventhandler != null)
-            {
-                displayEventhandler(this, arg);
-            }
+            RaiseTerminalInformationEvent(new string[] { text });
         }
         #endregion
 
         #region Interface
 
+        void RaiseTerminalDisplayEvent(string[] items)
+        {
+            EventHandler terminalEventhandler = TerminalDisplayEvent;
+
+            DisplayEventArgs arg = new DisplayEventArgs();
+
+            foreach (var iten in items)
+            {
+                arg.Items.Add(iten);
+            }
+
+            if (terminalEventhandler != null)
+            {
+                terminalEventhandler(this, arg);
+            }
+        }
+
+        void RaiseTerminalReceiptEvent(string[] items)
+        {
+            EventHandler receiptEventhandler = TerminalReceiptEvent;
+            DisplayEventArgs arg = new DisplayEventArgs();
+            foreach (var iten in items)
+            {
+                arg.Items.Add(iten);
+            }
+
+            if (receiptEventhandler != null)
+            {
+                receiptEventhandler(this, arg);
+            }
+        }
+
+        void RaiseTerminalInformationEvent(string[] items )
+        {
+
+            EventHandler displayEventhandler = TerminalInformationEvent;
+
+            DisplayEventArgs arg = new DisplayEventArgs();
+            
+            foreach (var iten in items)
+            {
+                arg.Items.Add(iten);
+            }
+            
+            if (displayEventhandler != null)
+            {
+                displayEventhandler(this, arg);
+            }
+        }
+
+        void RaiseTerminalExceptionEvent(string[] items)
+        {
+            EventHandler exceptionEventhandler = TerminalExceptionEvent;
+
+            DisplayEventArgs arg = new DisplayEventArgs();
+
+            foreach (var iten in items)
+            {
+                arg.Items.Add(iten);
+            }
+
+            if (exceptionEventhandler != null)
+            {
+                exceptionEventhandler(this, arg);
+            }
+        }
+
+        void RaiseTerminalTransactionEndedEvent()
+        {
+            EventHandler terminalTransactionEndedEvent = TerminalTransactionEndedEvent;
+            TransactionEventArgs tranArg = new TransactionEventArgs();
+            tranArg.TransactionNumber = TransactionNumber;
+            tranArg.TransactionAccepted = TransactionAccepted;
+
+            if (terminalTransactionEndedEvent != null)
+            {
+                terminalTransactionEndedEvent(this, tranArg);
+            }
+        }
+
+        void RaiseTerminalSignatureNeededEvent()
+        {
+            EventHandler signatureNeededEventhandler = TerminalSignatureNeededEvent;
+            
+            if (signatureNeededEventhandler != null)
+            {
+                signatureNeededEventhandler(this, null);
+            }
+        }
+
+
+
+
         public event EventHandler TerminalDisplayEvent;
         public event EventHandler TerminalReceiptEvent;
         public event EventHandler TerminalInformationEvent;
         public event EventHandler TerminalExceptionEvent;
-        public event EventHandler TerminalTransactionOkEvent;
+        public event EventHandler TerminalTransactionEndedEvent;
+        public event EventHandler TerminalSignatureNeededEvent;
+
+
 
         public void Anslut(string terminalAdr, int? terminalPort, int? comPort)
         {
@@ -468,6 +539,7 @@ namespace Momentum.Ekonomi.Payments.Terminal.Bpti
 
         public void Betala(int belopp, int moms, int tillbaka)
         {
+            TransactionNumber = string.Empty;
             API.start((int)TransactionTypes.LPP_PURCHASE);
             PendingTransactionType = (int)TransactionTypes.LPP_PURCHASE;
             API.sendAmounts(belopp, moms, tillbaka);
@@ -475,6 +547,7 @@ namespace Momentum.Ekonomi.Payments.Terminal.Bpti
 
         public void Återbetala(int belopp, int moms, int tillbaka)
         {
+            TransactionNumber = string.Empty;
             API.start((int)TransactionTypes.LPP_REFUND);
             PendingTransactionType = (int)TransactionTypes.LPP_PURCHASE;
             API.sendAmounts(belopp, moms, tillbaka);
@@ -482,13 +555,16 @@ namespace Momentum.Ekonomi.Payments.Terminal.Bpti
 
         public void Avbryt()
         {
+            TransactionNumber = string.Empty;
             API.cancel();
         }
 
         public void StängTerminal()
         {
+            
             if (PendingTransactionType != 0)
             {
+                TransactionNumber = string.Empty;
                 API.end();
             }
         }
@@ -496,9 +572,27 @@ namespace Momentum.Ekonomi.Payments.Terminal.Bpti
         public void Avsluta()
         {
             if (TransactionStarted)
+            {
                 API.endTransaction();
+                TransactionNumber = string.Empty;
+            }
         }
 
+        #endregion
+
+        #region Helpers
+        public void Open()
+        {
+            if (Opened)
+            {
+                API.close();
+            }
+        }
+
+        public void Close()
+        {
+            API.close();
+        }
         #endregion
     }
 }

@@ -16,22 +16,29 @@ namespace Momentum.Boplats.Ekonomi.Kassa
     {
 
         public BptiProvider Terminal = null;
-
+        BptiBootstrap bptiBootstrap;
 
 
         public KassaMain()
         {
             InitializeComponent();
             Terminal = new BptiProvider();
+            bptiBootstrap = new BptiBootstrap();
         }
+
+
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
 
+            //bptiBootstrap.InitializeBpti(Terminal);
+
             Terminal.TerminalInformationEvent += Terminal_TerminalCommonEvent;
             Terminal.TerminalDisplayEvent += Terminal_TerminalDisplayEvent;
             Terminal.TerminalExceptionEvent += Terminal_TerminalExceptionEvent;
+            Terminal.TerminalTransactionEndedEvent += Terminal_TerminalTransactionEndedEvent;
+            Terminal.TerminalSignatureNeededEvent += Terminal_TerminalSignatureNeededEvent;
 
             ConnectToTerminal();
 
@@ -42,9 +49,20 @@ namespace Momentum.Boplats.Ekonomi.Kassa
                 
                 printerWindow.Show();
             }
+                      
+        }
 
+        private void Terminal_TerminalSignatureNeededEvent(object sender, EventArgs e)
+        {
+            MessageBox.Show("Kvitto skall undertecknas av kund", "Kvittoutskrift", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+        }
 
-
+        private void Terminal_TerminalTransactionEndedEvent(object sender, EventArgs e)
+        {
+            var arg = e as TransactionEventArgs;
+            
+            
+            
         }
 
         private void Terminal_TerminalExceptionEvent(object sender, EventArgs e)
@@ -52,15 +70,15 @@ namespace Momentum.Boplats.Ekonomi.Kassa
             var arg = e as DisplayEventArgs;
             StringBuilder message = new StringBuilder();
 
+            eventsList.ForeColor = Color.Red;
+
             if (arg != null && arg.Items.Count > 0)
             {
                 foreach (var item in arg.Items)
                 {
-                    message.AppendLine(item);
+                    eventsList.Items.Insert(0,item);
                 }
-            }
-
-            MessageBox.Show(message.ToString());
+            }            
         }
 
         private void ConnectToTerminal()
@@ -71,7 +89,7 @@ namespace Momentum.Boplats.Ekonomi.Kassa
         private void Terminal_TerminalDisplayEvent(object sender, EventArgs e)
         {
             var arg = e as DisplayEventArgs;
-
+            eventsList.ForeColor = Color.Black;
             if (arg != null && arg.Items.Count > 0)
             {
                 foreach (var item in arg.Items)
@@ -197,6 +215,12 @@ namespace Momentum.Boplats.Ekonomi.Kassa
                 VAT.Text = "40";
             }
 
+        }
+
+        private void ReConnect_Click(object sender, EventArgs e)
+        {
+            Terminal.ReInitialize();
+            ConnectToTerminal();
         }
     }
 
